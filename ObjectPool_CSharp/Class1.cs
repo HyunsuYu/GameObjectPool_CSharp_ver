@@ -18,9 +18,28 @@ namespace ObjectPool_CSharp
                 mgameObject = gameObject;
             }
         }
+        public struct Coord
+        {
+            public readonly int mx;
+            public readonly int my;
+
+            public Coord(int x, int y)
+            {
+                mx = x;
+                my = y;
+            }
+            public static bool operator==(Coord a, Coord b)
+            {
+                return (a.mx == b.mx) && (a.my == b.my);
+            }
+            public static bool operator!=(Coord a, Coord b)
+            {
+                return !((a.mx == b.mx) && (a.my == b.my));
+            }
+        }
 
         //  property
-        public Dictionary<string, Node> mtable;
+        public Dictionary<Coord, Node> mtable;
 
         public int msize;
 
@@ -28,7 +47,7 @@ namespace ObjectPool_CSharp
         public GameObjectPool(int size = 30)
         {
             msize = size;
-            mtable = new Dictionary<string, Node>(msize);
+            mtable = new Dictionary<Coord, Node>(msize);
         }
         ~GameObjectPool()
         {
@@ -38,15 +57,15 @@ namespace ObjectPool_CSharp
         {
             Dispose(true);
         }
-        public void Add(in string key, in GameObject gameObject)
+        public void Add(in Coord key, in GameObject gameObject)
         {
             mtable.Add(key, new Node(gameObject));
         }
-        public bool TryAdd(in string key, in GameObject gameObject)
+        public bool TryAdd(in Coord key, in GameObject gameObject)
         {
             return mtable.TryAdd(key, new Node(gameObject));
         }
-        public bool Remove(in string key)
+        public bool Remove(in Coord key)
         {
             return mtable.Remove(key);
         }
@@ -54,7 +73,7 @@ namespace ObjectPool_CSharp
         {
             mtable.Clear();
         }
-        public bool Containskey(in string key)
+        public bool Containskey(in Coord key)
         {
             return mtable.ContainsKey(key);
         }
@@ -64,7 +83,7 @@ namespace ObjectPool_CSharp
         {
             get => msize;
         }
-        public Node this[string key]
+        public Node this[Coord key]
         {
             get
             {
